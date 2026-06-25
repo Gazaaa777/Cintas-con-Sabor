@@ -2686,7 +2686,11 @@ export default function App() {
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12 pt-8 border-t border-amber-900/65 flex flex-col sm:flex-row items-center justify-between text-[11px] text-amber-200/40 gap-4">
           <span>&copy; {new Date().getFullYear()} Cintas con Sabor. Todos los derechos reservados. Repostería Fina.</span>
-          <span className="font-mono">Hecho con amor y cintas de seda. Atado a mano.</span>
+          <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-6">
+            <span>Esta página fue creada por <a href="https://mantaiweb.com" target="_blank" rel="noopener noreferrer" className="underline text-amber-300/80 hover:text-amber-300 transition-colors font-semibold">mantaiweb.com</a></span>
+            <span className="font-mono hidden sm:inline">|</span>
+            <span className="font-mono">Hecho con amor y cintas de seda. Atado a mano.</span>
+          </div>
         </div>
       </footer>
 
