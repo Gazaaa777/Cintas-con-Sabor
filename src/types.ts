@@ -45,4 +45,5 @@ export interface ChefRecommendation {
   whyItsPerfect: string;
   ribbonDetail: string;
   chefSecretTip: string;
+  matchingProductIds?: string[];
 }

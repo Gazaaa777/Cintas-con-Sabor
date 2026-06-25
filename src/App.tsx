@@ -473,6 +473,15 @@ export default function App() {
             >
               {t("Catering & Menú General", "Catering & General Menu", "Traiteur & Menu Général")} <ChevronDown className="w-2.5 h-2.5 text-white/40" />
             </button>
+
+            <button 
+              onClick={() => {
+                setActiveSection("asistente");
+              }}
+              className={`hover:text-amber-300 transition-colors flex items-center gap-1 cursor-pointer uppercase font-bold border-none bg-transparent ${activeSection === "asistente" ? "text-amber-400 font-extrabold" : "text-amber-300"}`}
+            >
+              {t("✨ Chef IA", "✨ AI Chef", "✨ Chef IA")} <Sparkles className="w-3 h-3 text-amber-400 animate-pulse" />
+            </button>
           </div>
 
         </div>
@@ -2217,197 +2226,326 @@ export default function App() {
               Asistente Pastelero Inteligente
             </h2>
             <p className="text-sm text-amber-900/70">
-              ¿No estás seguro de cuál es el pastel idóneo para tu evento o paladar? Cuéntale a nuestro Maestro Pastelero de Inteligencia Artificial tus gustos, y él te prescribirá una combinación sublime junto con consejos de cata.
+              ¿No estás seguro de cuál es el pastel idóneo para tu evento o paladar? Cuéntale a nuestro Maestro Pastelero de Inteligencia Artificial tus gustos, y él te prescribirá una combinación sublime junto con consejos de cata de nuestro catálogo oficial.
             </p>
           </div>
 
-          <div className="bg-[#FAF6F0] rounded-3xl p-6 md:p-10 border border-amber-100 shadow-xl">
-            <form onSubmit={handleAskTheChef} className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                
-                {/* Preferences field */}
-                <div className="flex flex-col">
-                  <label className="text-xs font-bold uppercase tracking-wider text-amber-900/80 mb-2">
-                    🍒 ¿Qué Sabores te fascinan?
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    maxLength={150}
-                    placeholder="Ej: Chocolate belga amargo, dulce de leche, frutas frescas tiernas, etc."
-                    value={preferences}
-                    onChange={(e) => setPreferences(e.target.value)}
-                    className="px-4 py-3 bg-white rounded-xl border border-amber-100 focus:outline-none focus:border-amber-500 text-sm placeholder-amber-900/40 text-amber-950 shadow-xs"
-                  />
-                </div>
-
-                {/* Event Type field */}
-                <div className="flex flex-col">
-                  <label className="text-xs font-bold uppercase tracking-wider text-amber-900/80 mb-2">
-                    🎈 ¿Cuál es la Ocasión especial?
-                  </label>
-                  <select
-                    value={eventType}
-                    onChange={(e) => setEventType(e.target.value)}
-                    className="px-4 py-3 bg-white rounded-xl border border-amber-100 focus:outline-none focus:border-amber-500 text-sm text-amber-950 shadow-xs cursor-pointer"
-                  >
-                    <option value="Aniversario Romántico">Aniversario Romántico extremadamente elegante</option>
-                    <option value="Cumpleaños Sorpresa">Cumpleaños Sorpresa</option>
-                    <option value="Cena de Gala con amigos">Cena de Gala / Banquete con amig@s</option>
-                    <option value="Regalo Corporativo Lujoso">Regalo Corporativo Lujoso</option>
-                    <option value="Boda de Ensueño">Boda de Ensueño / Compromiso</option>
-                    <option value="Antojo Personal de fin de semana">Antojo Personal de fin de semana</option>
-                  </select>
-                </div>
-              </div>
-
-              {/* Dietary specifications and Allergies */}
-              <div className="flex flex-col">
-                <label className="text-xs font-bold uppercase tracking-wider text-amber-900/80 mb-2">
-                  🌾 Restricciones Alimenticias (Opcional)
-                </label>
-                <input
-                  type="text"
-                  maxLength={100}
-                  placeholder="Ej: Evitar frutos secos, sin alcohol, bajo en azúcar, etc."
-                  value={dietary}
-                  onChange={(e) => setDietary(e.target.value)}
-                  className="px-4 py-3 bg-white rounded-xl border border-amber-100 focus:outline-none focus:border-amber-500 text-sm placeholder-amber-900/40 text-amber-950 shadow-xs"
-                />
-              </div>
-
-              {/* Call-to-action generate recommendations */}
-              <div className="flex justify-center pt-2">
-                <button
-                  type="submit"
-                  disabled={isGenerating}
-                  className="bg-amber-950 hover:bg-amber-900 text-white font-bold text-xs uppercase tracking-widest px-8 py-4 rounded-full shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
-                >
-                  <ChefHat className="w-4.5 h-4.5 text-amber-400" />
-                  {isGenerating ? "Consultando al Maestro Pastelero..." : "Obtener Recomendación Dulce"}
-                </button>
-              </div>
-            </form>
-
-            {/* AI Response recommendation readout */}
-            <AnimatePresence>
-              {chefRecommendation && (
-                <motion.div
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  className="mt-8 border-t border-amber-200/60 pt-8"
-                >
-                  <div className="bg-white rounded-2xl p-6 md:p-8 border border-amber-150 shadow-md relative overflow-hidden">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch max-w-7xl mx-auto">
+            
+            {/* LEFT COLUMN: AI Form & Recommendations (8/12 of screen) */}
+            <div className="lg:col-span-8 flex flex-col space-y-6">
+              <div className="bg-[#FAF6F0] rounded-3xl p-6 md:p-10 border border-amber-100 shadow-xl flex-grow">
+                <form onSubmit={handleAskTheChef} className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     
-                    {/* Ribbon background design element */}
-                    <div className="absolute top-0 right-0 w-32 h-32 bg-amber-50 rounded-full flex items-center justify-center opacity-30 transform translate-x-8 -translate-y-8">
-                      <Award className="w-16 h-16 text-amber-900" />
+                    {/* Preferences field */}
+                    <div className="flex flex-col">
+                      <label className="text-xs font-bold uppercase tracking-wider text-amber-900/80 mb-2 flex items-center gap-1.5">
+                        <span>🍒 ¿Qué Sabores te fascinan?</span>
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        maxLength={150}
+                        placeholder="Ej: Chocolate belga amargo, dulce de leche, frutas frescas, etc."
+                        value={preferences}
+                        onChange={(e) => setPreferences(e.target.value)}
+                        className="px-4 py-3 bg-white rounded-xl border border-amber-100 focus:outline-none focus:border-amber-500 text-sm placeholder-amber-900/40 text-amber-950 shadow-xs"
+                      />
                     </div>
 
-                    <div className="relative z-10 space-y-4">
-                      
-                      <div className="flex items-center gap-2 text-amber-800 text-xs font-bold uppercase tracking-wider">
-                        <Award className="w-4 h-4 text-amber-600" />
-                        <span>Prescripción de Alta Pastelería</span>
-                      </div>
-
-                      <h3 className="font-serif text-2xl text-amber-950 font-black">
-                        {chefRecommendation.cakeName}
-                      </h3>
-
-                      <p className="text-sm italic text-amber-950 font-medium">
-                        "{chefRecommendation.description}"
-                      </p>
-
-                      <p className="text-xs sm:text-sm text-amber-900/80 leading-relaxed pt-2">
-                        <strong>Razonamiento del Chef:</strong> {chefRecommendation.whyItsPerfect}
-                      </p>
-
-                      {/* Presentation & Ribbon tip */}
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-amber-50">
-                        <div className="bg-amber-50/50 p-3.5 rounded-xl border border-amber-100">
-                          <span className="text-[10px] text-amber-900/50 uppercase tracking-widest block font-bold mb-1">
-                            Ajuste de Moño Recomendado
-                          </span>
-                          <span className="text-xs font-bold text-amber-950 block">
-                            🎀 {chefRecommendation.ribbonDetail}
-                          </span>
-                        </div>
-                        <div className="bg-amber-50/50 p-3.5 rounded-xl border border-amber-100">
-                          <span className="text-[10px] text-amber-900/50 uppercase tracking-widest block font-bold mb-1">
-                            Secreto de Degustación
-                          </span>
-                          <span className="text-xs italic text-amber-950 block">
-                            💡 {chefRecommendation.chefSecretTip}
-                          </span>
-                        </div>
-                      </div>
-
-                      {/* Quick order of the AI suggestion prompt */}
-                      <div className="pt-4 flex items-center justify-end">
-                        <button
-                          type="button"
-                          onClick={() => {
-                            // Find matching product or add a custom simulated recommendation box
-                            const matchingProd = PRODUCTS.find(
-                              p => p.name.toLowerCase().includes(chefRecommendation.cakeName.toLowerCase()) ||
-                              chefRecommendation.cakeName.toLowerCase().includes(p.name.toLowerCase())
-                            );
-
-                            if (matchingProd) {
-                              handleAddToCart({
-                                product: matchingProd,
-                                quantity: 1,
-                                selectedSize: matchingProd.sizes[0].label,
-                                selectedServings: matchingProd.sizes[0].servings,
-                                selectedRibbon: chefRecommendation.ribbonDetail,
-                                customText: `Sugerido por Chef AI (${eventType})`,
-                                customPrice: matchingProd.price
-                              });
-                            } else {
-                              // Custom placeholder creation
-                              const virtualProduct: Product = {
-                                id: `ai-suggest-${Date.now()}`,
-                                name: chefRecommendation.cakeName,
-                                description: chefRecommendation.description,
-                                price: 39000,
-                                category: "gourmet",
-                                image: "/src/assets/images/hero_luxury_cake_1782151687947.jpg",
-                                rating: 5.0,
-                                sizes: [{ label: "Recomendado Especial", priceAdder: 0, servings: "8-10 personas" }]
-                              };
-
-                              handleAddToCart({
-                                product: virtualProduct,
-                                quantity: 1,
-                                selectedSize: "Recomendado Especial",
-                                selectedServings: "8-10 personas",
-                                selectedRibbon: chefRecommendation.ribbonDetail,
-                                customText: `Recetado por Asistente de IA para ${eventType}`,
-                                customPrice: 39000
-                              });
-                            }
-                            setIsCartOpen(true);
-                          }}
-                          className="bg-amber-950 hover:bg-amber-900 text-[#FAF6F0] font-bold text-xs uppercase px-5 py-3 rounded-full shadow-md transition-all flex items-center gap-1.5 cursor-pointer"
-                        >
-                          <ShoppingBag className="w-3.5 h-3.5" />
-                          Agregar Recomendación al Carrito
-                        </button>
-                      </div>
-
+                    {/* Event Type field */}
+                    <div className="flex flex-col">
+                      <label className="text-xs font-bold uppercase tracking-wider text-amber-900/80 mb-2 flex items-center gap-1.5">
+                        <span>🎈 ¿Cuál es la Ocasión especial?</span>
+                      </label>
+                      <select
+                        value={eventType}
+                        onChange={(e) => setEventType(e.target.value)}
+                        className="px-4 py-3 bg-white rounded-xl border border-amber-100 focus:outline-none focus:border-amber-500 text-sm text-amber-950 shadow-xs cursor-pointer"
+                      >
+                        <option value="Aniversario Romántico">Aniversario Romántico extremadamente elegante</option>
+                        <option value="Cumpleaños Sorpresa">Cumpleaños Sorpresa</option>
+                        <option value="Cena de Gala con amigos">Cena de Gala / Banquete con amig@s</option>
+                        <option value="Regalo Corporativo Lujoso">Regalo Corporativo Lujoso</option>
+                        <option value="Boda de Ensueño">Boda de Ensueño / Compromiso</option>
+                        <option value="Antojo Personal de fin de semana">Antojo Personal de fin de semana</option>
+                      </select>
                     </div>
                   </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
 
-            {errorGenerating && (
-              <div className="mt-4 text-center text-xs text-red-800 bg-red-50 p-3 rounded-xl border border-red-200">
-                Hubo un inconveniente consultando al chef por internet, pero te hemos preparado nuestra tarta premium de temporada a modo de exquisita recomendación ideal.
+                  {/* Dietary specifications and Allergies */}
+                  <div className="flex flex-col">
+                    <label className="text-xs font-bold uppercase tracking-wider text-amber-900/80 mb-2 flex items-center gap-1.5">
+                      <span>🌾 Restricciones Alimenticias y Salud (Opcional)</span>
+                    </label>
+                    <input
+                      type="text"
+                      maxLength={100}
+                      placeholder="Ej: Gluten-friendly (Sin gluten), sin azúcar añadida, evitar frutos secos..."
+                      value={dietary}
+                      onChange={(e) => setDietary(e.target.value)}
+                      className="px-4 py-3 bg-white rounded-xl border border-amber-100 focus:outline-none focus:border-amber-500 text-sm placeholder-amber-900/40 text-amber-950 shadow-xs"
+                    />
+                    <span className="text-[10px] text-amber-800/60 mt-1 block">
+                      Nota: Al especificar restricciones como "sin gluten" o "sin azúcar", nuestro Chef buscará galletas o pasteles con fórmulas especialmente adaptadas para vos.
+                    </span>
+                  </div>
+
+                  {/* Call-to-action generate recommendations */}
+                  <div className="flex justify-center pt-2">
+                    <button
+                      type="submit"
+                      disabled={isGenerating}
+                      className="bg-amber-950 hover:bg-amber-900 text-white font-bold text-xs uppercase tracking-widest px-8 py-4 rounded-full shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                    >
+                      <ChefHat className="w-4.5 h-4.5 text-amber-400" />
+                      {isGenerating ? "Consultando al Maestro Pastelero..." : "Obtener Recomendación Dulce"}
+                    </button>
+                  </div>
+                </form>
+
+                {/* AI Response recommendation readout */}
+                <AnimatePresence>
+                  {chefRecommendation && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 30 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -20 }}
+                      className="mt-8 border-t border-amber-200/60 pt-8"
+                    >
+                      <div className="bg-white rounded-2xl p-6 md:p-8 border border-amber-150 shadow-md relative overflow-hidden space-y-6">
+                        
+                        {/* Ribbon background design element */}
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-amber-50 rounded-full flex items-center justify-center opacity-30 transform translate-x-8 -translate-y-8">
+                          <Award className="w-16 h-16 text-amber-900" />
+                        </div>
+
+                        <div className="relative z-10 space-y-4">
+                          
+                          <div className="flex items-center gap-2 text-amber-800 text-xs font-bold uppercase tracking-wider">
+                            <Award className="w-4 h-4 text-amber-600" />
+                            <span>Prescripción de Alta Pastelería</span>
+                          </div>
+
+                          <h3 className="font-serif text-2xl text-amber-950 font-black">
+                            {chefRecommendation.cakeName}
+                          </h3>
+
+                          <p className="text-sm italic text-amber-950 font-medium bg-amber-50/40 p-3 rounded-xl border-l-4 border-amber-500">
+                            "{chefRecommendation.description}"
+                          </p>
+
+                          <p className="text-xs sm:text-sm text-amber-900/80 leading-relaxed pt-2">
+                            <strong>Razonamiento del Chef:</strong> {chefRecommendation.whyItsPerfect}
+                          </p>
+
+                          {/* Presentation & Ribbon tip */}
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-amber-50">
+                            <div className="bg-amber-50/50 p-3.5 rounded-xl border border-amber-100">
+                              <span className="text-[10px] text-amber-900/50 uppercase tracking-widest block font-bold mb-1">
+                                Ajuste de Moño Recomendado
+                              </span>
+                              <span className="text-xs font-bold text-amber-950 block">
+                                🎀 {chefRecommendation.ribbonDetail}
+                              </span>
+                            </div>
+                            <div className="bg-amber-50/50 p-3.5 rounded-xl border border-amber-100">
+                              <span className="text-[10px] text-amber-900/50 uppercase tracking-widest block font-bold mb-1">
+                                Secreto de Degustación
+                              </span>
+                              <span className="text-xs italic text-amber-950 block">
+                                💡 {chefRecommendation.chefSecretTip}
+                              </span>
+                            </div>
+                          </div>
+
+                          {/* Quick order of the AI suggestion prompt */}
+                          <div className="pt-4 flex items-center justify-end">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                // Find matching product or add a custom simulated recommendation box
+                                const matchingProd = PRODUCTS.find(
+                                  p => p.name.toLowerCase().includes(chefRecommendation.cakeName.toLowerCase()) ||
+                                  chefRecommendation.cakeName.toLowerCase().includes(p.name.toLowerCase())
+                                );
+
+                                if (matchingProd) {
+                                  handleAddToCart({
+                                    product: matchingProd,
+                                    quantity: 1,
+                                    selectedSize: matchingProd.sizes[0].label,
+                                    selectedServings: matchingProd.sizes[0].servings,
+                                    selectedRibbon: chefRecommendation.ribbonDetail,
+                                    customText: `Sugerido por Chef AI (${eventType})`,
+                                    customPrice: matchingProd.price
+                                  });
+                                } else {
+                                  // Custom placeholder creation
+                                  const virtualProduct: Product = {
+                                    id: `ai-suggest-${Date.now()}`,
+                                    name: chefRecommendation.cakeName,
+                                    description: chefRecommendation.description,
+                                    price: 14500,
+                                    category: "gourmet",
+                                    image: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&q=80&w=600",
+                                    rating: 5.0,
+                                    sizes: [{ label: "Recomendado Especial", priceAdder: 0, servings: "8-10 personas" }]
+                                  };
+
+                                  handleAddToCart({
+                                    product: virtualProduct,
+                                    quantity: 1,
+                                    selectedSize: "Recomendado Especial",
+                                    selectedServings: "8-10 personas",
+                                    selectedRibbon: chefRecommendation.ribbonDetail,
+                                    customText: `Recetado por Asistente de IA para ${eventType}`,
+                                    customPrice: 14500
+                                  });
+                                }
+                                setIsCartOpen(true);
+                              }}
+                              className="bg-amber-950 hover:bg-amber-900 text-[#FAF6F0] font-bold text-xs uppercase px-5 py-3 rounded-full shadow-md transition-all flex items-center gap-1.5 cursor-pointer"
+                            >
+                              <ShoppingBag className="w-3.5 h-3.5" />
+                              Agregar Recomendación al Carrito
+                            </button>
+                          </div>
+
+                        </div>
+
+                        {/* DYNAMIC SEARCH PRODUCTS MATCHING CLIENT RESTRICTIONS & FLAVORS */}
+                        {chefRecommendation.matchingProductIds && chefRecommendation.matchingProductIds.length > 0 && (
+                          <div className="pt-8 border-t border-amber-100 mt-6">
+                            <div className="flex items-center gap-2 mb-4">
+                              <Sparkles className="w-5 h-5 text-amber-700 animate-pulse" />
+                              <h4 className="font-serif text-lg font-bold text-amber-950">
+                                Productos Coincidentes Encontrados ({PRODUCTS.filter(p => chefRecommendation.matchingProductIds?.includes(p.id)).length})
+                              </h4>
+                            </div>
+                            <p className="text-xs text-amber-900/60 mb-6">
+                              He analizado detenidamente tus preferencias y restricciones. Estos son los productos reales de nuestra repostería que encajan a la perfección:
+                            </p>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                              {PRODUCTS.filter(p => chefRecommendation.matchingProductIds?.includes(p.id)).map(prod => (
+                                <ProductCard
+                                  key={prod.id}
+                                  product={prod}
+                                  onAddToCart={handleAddToCart}
+                                />
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                {errorGenerating && (
+                  <div className="mt-4 text-center text-xs text-red-800 bg-red-50 p-3 rounded-xl border border-red-200">
+                    Hubo un inconveniente consultando al chef por internet, pero te hemos preparado nuestra tarta premium de temporada a modo de exquisita recomendación ideal.
+                  </div>
+                )}
               </div>
-            )}
+            </div>
+
+            {/* RIGHT COLUMN: BOUTIQUE & BUSINESS INFO BOARD (4/12 of screen) */}
+            <div className="lg:col-span-4 flex flex-col space-y-6">
+              
+              {/* Concept & Ribbon wrapping */}
+              <div className="bg-[#FAF6F0] rounded-3xl p-6 border border-amber-100 shadow-sm relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-24 h-24 bg-amber-100/30 rounded-full blur-xl pointer-events-none" />
+                <h3 className="font-serif text-lg font-bold text-amber-950 mb-3 flex items-center gap-2">
+                  <Gift className="w-5 h-5 text-amber-800" />
+                  <span>Atelier Cintas con Sabor</span>
+                </h3>
+                <p className="text-xs text-amber-900/70 leading-relaxed mb-4">
+                  Somos el primer atelier en San José dedicado a la alta repostería que viste de manera sumamente prolija cada queque con <strong>moños y cintas satinadas de seda fina</strong> hechas a mano, convirtiendo cada bocado en un obsequio inolvidable.
+                </p>
+                <div className="bg-white/80 p-3 rounded-xl border border-amber-50">
+                  <span className="text-[10px] uppercase font-bold tracking-wider text-amber-950 block mb-1">
+                    ✨ Ingredientes de Altura:
+                  </span>
+                  <p className="text-[11px] text-amber-900/70">
+                    Cacao belga premium al 70%, vainilla natural Bourbon de Madagascar, dulce de leche de cocción lenta y mantequilla artesanal.
+                  </p>
+                </div>
+              </div>
+
+              {/* Location and Pickups */}
+              <div className="bg-amber-50/40 rounded-3xl p-6 border border-amber-100/60 shadow-xs">
+                <h3 className="font-serif text-base font-bold text-amber-950 mb-4 flex items-center gap-2">
+                  <MapPin className="w-4.5 h-4.5 text-amber-800" />
+                  <span>Ubicación y Entregas</span>
+                </h3>
+                
+                <div className="space-y-4">
+                  <div className="flex items-start gap-3">
+                    <div className="w-7 h-7 rounded-lg bg-amber-100 flex items-center justify-center text-amber-900 text-xs font-bold flex-shrink-0 mt-0.5">
+                      📍
+                    </div>
+                    <div>
+                      <h4 className="text-xs font-bold text-amber-950">Atelier Boutique</h4>
+                      <p className="text-[11px] text-amber-900/70">Barrio Escalante, de la rotonda 100m oeste, San José, Costa Rica.</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <div className="w-7 h-7 rounded-lg bg-amber-100 flex items-center justify-center text-amber-900 text-xs font-bold flex-shrink-0 mt-0.5">
+                      🛍️
+                    </div>
+                    <div>
+                      <h4 className="text-xs font-bold text-amber-950">Solo Retiro en Boutique</h4>
+                      <p className="text-[11px] text-amber-900/70">No contamos con servicio a domicilio para resguardar la perfecta presentación e integridad de las cintas y moños.</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <div className="w-7 h-7 rounded-lg bg-amber-100 flex items-center justify-center text-amber-900 text-xs font-bold flex-shrink-0 mt-0.5">
+                      🕒
+                    </div>
+                    <div>
+                      <h4 className="text-xs font-bold text-amber-950">Horario de Atención</h4>
+                      <p className="text-[11px] text-amber-900/70">Lunes a Sábado: 10:00 AM – 7:30 PM.<br/>Domingos: 11:00 AM – 5:00 PM.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Health and Restrictions Note */}
+              <div className="bg-amber-50/20 rounded-3xl p-6 border border-amber-150 border-dashed">
+                <h3 className="font-serif text-base font-bold text-amber-950 mb-3 flex items-center gap-2">
+                  <span>🌾 Restricciones & Salud</span>
+                </h3>
+                <p className="text-xs text-amber-900/70 leading-relaxed mb-3">
+                  Nuestra repostería se enorgullece de ser inclusiva para personas celíacas o diabéticas sin perder un solo gramo de su majestuosidad culinaria:
+                </p>
+                <ul className="text-[11px] text-amber-900/70 space-y-1.5 list-disc pl-4">
+                  <li><strong>Gluten-Friendly:</strong> Nuestra galleta sándwich estrella está hecha con harinas certificadas libres de gluten y en cocina sanitizada para evitar contaminación cruzada.</li>
+                  <li><strong>Sin Azúcar Añadida:</strong> Preparamos queques especiales endulzados con alulosa de alta repostería que no impactan los niveles de insulina de nuestros clientes.</li>
+                </ul>
+              </div>
+
+              {/* Fast WhatsApp Support */}
+              <div className="bg-amber-950 text-white rounded-3xl p-6 shadow-md text-center">
+                <h4 className="font-serif text-base font-bold mb-2">¿Necesitas un diseño personalizado?</h4>
+                <p className="text-[11px] text-white/70 mb-4">Platiquemos directo con nuestro equipo por chat para decoraciones especiales, pedidos de boda o eventos masivos.</p>
+                <a 
+                  href="https://wa.me/50688888888?text=Hola!%20Deseo%20cotizar%20un%20diseño%20personalizado%20con%20Cintas%20con%20Sabor."
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2.5 rounded-full font-bold text-xs uppercase tracking-wider inline-flex items-center gap-1.5 transition-colors"
+                >
+                  <MessageCircle className="w-4 h-4 fill-white text-emerald-600" />
+                  Escribir por WhatsApp
+                </a>
+              </div>
+
+            </div>
+
           </div>
 
         </div>
@@ -3091,19 +3229,65 @@ export default function App() {
                           </div>
                           
                           <div className="text-right flex-shrink-0 flex flex-col gap-1.5 items-end">
-                            <span className="text-xs font-bold font-serif text-amber-950">¢{product.price.toLocaleString("es-CR")}</span>
-                            <div className="flex gap-2">
-                              {/* Jumps to Menu Anchor */}
+                            {product.sizes && product.sizes.length > 1 ? (
+                              <div className="flex flex-col items-end gap-0.5">
+                                <span className="text-[9px] uppercase tracking-wider font-extrabold text-amber-900/50">Desde</span>
+                                <span className="text-sm font-bold font-serif text-amber-950">
+                                  ¢{product.price.toLocaleString("es-CR")}
+                                </span>
+                                <div className="flex flex-col items-end gap-0.5 mt-1 bg-amber-50/80 px-2 py-1.5 rounded-lg border border-amber-100/60 max-w-[190px]">
+                                  {product.sizes.map((sz, i) => (
+                                    <span key={i} className="text-[9px] text-amber-900/80 font-mono text-right whitespace-nowrap block">
+                                      {sz.label.split(" (")[0]}: <strong className="text-amber-950">¢{(product.price + sz.priceAdder).toLocaleString("es-CR")}</strong>
+                                    </span>
+                                  ))}
+                                </div>
+                              </div>
+                            ) : (
+                              <span className="text-sm font-bold font-serif text-amber-950">
+                                ¢{product.price.toLocaleString("es-CR")}
+                              </span>
+                            )}
+                            <div className="flex gap-2 mt-1">
+                              {/* Redirects and shows exact product detail customization */}
                               <button
                                 onClick={() => {
                                   setIsSearchOpen(false);
                                   setSearchQuery("");
-                                  setActiveCategory("all");
+                                  
+                                  // 1. Establish the correct view and category
+                                  if (product.category === "box" || product.category === "cumple") {
+                                    setActiveSection("menus");
+                                    setActiveCategory(product.category);
+                                  } else if (product.category === "antojos") {
+                                    setActiveSection("antojos");
+                                  } else if (product.category === "catering") {
+                                    setActiveSection("catering");
+                                    if (product.subcategory) {
+                                      setActiveCateringSubcategory(product.subcategory as any);
+                                    }
+                                  } else {
+                                    setActiveSection("menus");
+                                    setActiveCategory("all");
+                                  }
+
+                                  // 2. Scroll and open the detailed custom options modal
                                   setTimeout(() => {
-                                    document.getElementById("menus")?.scrollIntoView({ behavior: "smooth" });
-                                  }, 300);
+                                    const elementId = `product-${product.id}`;
+                                    const el = document.getElementById(elementId);
+                                    if (el) {
+                                      el.scrollIntoView({ behavior: "smooth", block: "center" });
+                                      setTimeout(() => {
+                                        document.getElementById(`btn-customize-${product.id}`)?.click();
+                                      }, 550);
+                                    } else {
+                                      // Fallback scroll to section if element is not rendered
+                                      const sectionId = product.category === "catering" ? "catering" : product.category === "antojos" ? "antojos" : "menus";
+                                      document.getElementById(sectionId)?.scrollIntoView({ behavior: "smooth" });
+                                    }
+                                  }, 350);
                                 }}
-                                className="px-3 py-1 rounded-full text-[9px] uppercase font-bold border border-amber-950 text-amber-950 hover:bg-amber-100 transition-colors cursor-pointer"
+                                className="px-3 py-1.5 rounded-full text-[9px] uppercase font-bold border border-amber-950 text-amber-950 hover:bg-amber-100 transition-colors cursor-pointer"
                               >
                                 Ver Detalle
                               </button>
@@ -3122,7 +3306,7 @@ export default function App() {
                                   });
                                   showToast(`¡${product.name} añadido a tu bolsa! 🛍️`);
                                 }}
-                                className="px-3 py-1 rounded-full text-[9px] uppercase font-bold bg-amber-950 hover:bg-amber-900 text-[#FAF6F0] transition-colors cursor-pointer"
+                                className="px-3 py-1.5 rounded-full text-[9px] uppercase font-bold bg-amber-950 hover:bg-amber-900 text-[#FAF6F0] transition-colors cursor-pointer"
                               >
                                 Añadir
                               </button>
@@ -3236,9 +3420,9 @@ export default function App() {
                   {activeFaqTab === "delivery" && (
                     <div className="space-y-4 text-xs font-sans">
                       <div className="space-y-1">
-                        <h4 className="font-bold text-[#35251F] font-serif">📍 ¿Ofrecen retiro presencial y despachos a domicilio?</h4>
+                        <h4 className="font-bold text-[#35251F] font-serif">📍 ¿Ofrecen retiro presencial o entregas a domicilio?</h4>
                         <p className="text-amber-900/80 leading-relaxed">
-                          Sí. Ofrecemos retiro premium en nuestra Boutique física o despachos a domicilio programados. Para mantener la integridad estructural, cada pastel se transporta en vehículos refrigerados equipados con soportes de suspensión hidráulica.
+                          No contamos con servicio a domicilio. Para resguardar la perfecta presentación e integridad de la envoltura de moños y cintas de cada una de nuestras creaciones, todas las entregas se realizan exclusivamente para retiro presencial en nuestra Boutique física en Barrio Escalante, o bien coordinando tu propio transporte de confianza (como Uber/Didi) bajo tu propia responsabilidad.
                         </p>
                       </div>
                       <div className="space-y-1">
